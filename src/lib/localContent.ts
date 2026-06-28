@@ -11,7 +11,7 @@ export const localImages = {
   tileBooks: "/images/Tile1-Books.png",
   tileAbout: "/images/Tile2- About me.png",
   tileUpdates: "/images/Tile3 - Aktuellt.png",
-  portrait: "/images/Portrait.png",
+  portrait: "/images/Portrait-andre.jpg",
 } as const;
 
 /** Kontakt- och profiluppgifter (platshållare tills Sanity fylls). */

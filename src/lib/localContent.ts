@@ -15,18 +15,76 @@ export const localImages = {
 } as const;
 
 /** Kontakt- och profiluppgifter (platshållare tills Sanity fylls). */
+/** En sektion i Om mig: valfri rubrik, brödtext och/eller punktlista. */
+export interface AboutSection {
+  heading?: string;
+  paragraphs?: string[];
+  list?: string[];
+}
+
 export const localProfile = {
   name: "André Roslund",
   tagline: "Författare",
   aboutHeading: "Om mig",
-  // Saklig, neutral text – André finjusterar gärna själv i CMS.
-  aboutText:
-    "André Roslund är en svensk författare, född 1970. Han skriver true crime och självbiografiska berättelser som utgår från egna erfarenheter. Debuten Älsklingsgrabben gavs ut 1999, följd av bland annat Ränderna går aldrig ur och ADHD-bedragaren.",
+  // Andrés egen text. Lede + strukturerade sektioner.
+  aboutIntro: [
+    "Jag är en livsnjutare som drivs av konst, kreativitet och det skrivna ordet.",
+    "Mitt liv rör sig mellan kontraster. Ena dagen suger jag in Stockholms pulserande tempo, för att nästa dag finna det totala lugnet i Kungsör. Det är där, på kajkanten med dinglande ben eller framför ett staffli, som jag sorterar alla intryck och idéer som snurrar i skallen.",
+    "Jag älskar att observera min omgivning. Att sitta på ett tåg med en bra bok, dricka en kopp kaffe och titta på människor som stressar förbi är en stor inspirationskälla. Likaså att ta en båtresa ut i Stockholms skärgård – det är som att kliva rakt tillbaka i tiden.",
+  ],
+  aboutSections: [
+    {
+      heading: "🎨 Konst och samlande",
+      paragraphs: [
+        "Mitt eget konstintresse blommar extra mycket under sommarmånaderna då jag gärna besöker sommarutställningar. Jag inspireras enormt av att se alla fantastiska verk av landets många duktiga amatörmålare.",
+        "I min privata samling hittar man främst verk av Bengt Lindström och Bengt Åberg. Jag har även en stor förkärlek för Lennart Jirlows konst. Utöver det köper jag gärna prisvärd djurkonst via auktioner, vilket jag anser är det absolut bekvämaste sättet att handla konst på.",
+        "Sedan 30 år tillbaka är jag också djupt fascinerad av det samiska hantverket. Jag är helt frälst i samisk slöjd och hyser en enorm beundran för Tore Sunna och släkten Fankkis fantastiska slöjdande.",
+      ],
+    },
+    {
+      heading: "📚 Min passion för böcker",
+      paragraphs: [
+        "Både mitt läsande och skrivande går i perioder. Ibland blir jag så helt uppslukad av en bok att vardagens bekymmer helt glöms bort. Jag är ständigt på jakt efter den perfekta boken, även om det finns alldeles för många fantastiska verk för att bara välja ut ett enda.",
+        "Några böcker som har präglat mig extra djupt och satt outplånliga spår är:",
+      ],
+      list: [
+        "Pojken som kallades Det – Dave Pelzer",
+        "Inte utan min dotter – Betty Mahmoody",
+        "Ursäkta, mitt namn är Broman – Hannes Holm (filmatiserad som Himlen är oskyldigt blå)",
+      ],
+    },
+  ] as AboutSection[],
   email: "andreroslund@outlook.com",
   phone: "076-286 81 43",
   facebookUrl: "https://www.facebook.com/profile.php?id=100074433578866",
   youtubeUrl: "https://www.youtube.com/@andreroslund1366",
 } as const;
+
+/** Tillfälliga "Aktuellt"-inlägg (Andrés pågående bokprojekt). */
+export interface LocalUpdate {
+  _id: string;
+  title: string;
+  date?: string;
+  body: string;
+}
+
+export const localUpdates: LocalUpdate[] = [
+  {
+    _id: "update-intro",
+    title: "Mina pågående bokprojekt",
+    body: "Att skriva är fantastiskt roligt och inspirerande, men det kan också vara ensamt och kräva stort tålamod. Jag har en stor förkärlek för själva redigeringsarbetet – att slipa på texten tills den blir slagfärdig, tät och träffsäker. Söker man snabba kickar är författaryrket inget att rekommendera. Just nu arbetar jag parallellt med två olika manus.",
+  },
+  {
+    _id: "update-seriemordaren",
+    title: "Den ödmjuke seriemördaren (arbetstitel)",
+    body: "En spänningsroman med hög realistisk förankring som utspelar sig i Stockholm. Berättelsen följer en seriemördare som härjar i huvudstaden och polisens intensiva jakt på att stoppa gärningsmannen.",
+  },
+  {
+    _id: "update-rikets-sakerhet",
+    title: "Rikets säkerhet (arbetstitel)",
+    body: "En politisk thriller i militär miljö. Handlingen kretsar kring MUST (Militära underrättelse- och säkerhetstjänsten) och handlar om hur strategiska och sårbara platser skyddas i händelse av krig.",
+  },
+];
 
 export interface LocalBook {
   _id: string;

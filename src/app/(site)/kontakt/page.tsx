@@ -46,9 +46,32 @@ export default async function ContactPage() {
               ))}
             </div>
           ) : (
-            <p className="mt-6 leading-relaxed text-muted">
-              {localProfile.aboutText}
-            </p>
+            <div className="mt-6 space-y-4 leading-relaxed text-muted">
+              {localProfile.aboutIntro.map((p, i) => (
+                <p key={`intro-${i}`}>{p}</p>
+              ))}
+              {localProfile.aboutSections.map((sec, i) => (
+                <div key={`sec-${i}`} className="pt-4">
+                  {sec.heading && (
+                    <h3 className="mb-3 font-display text-xl text-accent">
+                      {sec.heading}
+                    </h3>
+                  )}
+                  {sec.paragraphs?.map((p, j) => (
+                    <p key={`p-${i}-${j}`} className="mb-3">
+                      {p}
+                    </p>
+                  ))}
+                  {sec.list && (
+                    <ul className="ml-5 list-disc space-y-1">
+                      {sec.list.map((item, k) => (
+                        <li key={`li-${i}-${k}`}>{item}</li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              ))}
+            </div>
           )}
         </Reveal>
 

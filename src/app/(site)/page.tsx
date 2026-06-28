@@ -3,7 +3,7 @@ import { getSettings, getBooks, getUpdates } from "@/sanity/lib/queries";
 import SanityImg from "@/components/SanityImg";
 import BookCard from "@/components/BookCard";
 import Reveal from "@/components/Reveal";
-import { localImages, localBooks } from "@/lib/localContent";
+import { localImages, localBooks, localUpdates } from "@/lib/localContent";
 
 export default async function HomePage() {
   const [settings, books, updates] = await Promise.all([
@@ -28,7 +28,7 @@ export default async function HomePage() {
         fallback: b.coverSrc,
       }))
     : featured.map((b) => ({ book: b, fallback: undefined }));
-  const latestUpdate = updates[0];
+  const latestUpdate = updates[0] ?? localUpdates[0];
 
   const tiles = [
     {

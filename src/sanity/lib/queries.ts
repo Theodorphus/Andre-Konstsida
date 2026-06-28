@@ -1,6 +1,7 @@
 import { groq } from "next-sanity";
 
 import { client } from "./client";
+import { isSanityConfigured } from "../env";
 
 export interface Book {
   _id: string;
@@ -61,6 +62,8 @@ const opts = { next: { revalidate: 60 } };
 // Innan Sanity-projektet är kopplat (eller vid tillfälligt fel) faller vi
 // tillbaka på tomt innehåll så att sidan ändå renderar med platshållare.
 async function safeFetch<T>(query: string, fallback: T): Promise<T> {
+  // Hoppa över nätverksanropet helt om inget riktigt Sanity-projekt är satt.
+  if (!isSanityConfigured) return fallback;
   try {
     return await client.fetch(query, {}, opts);
   } catch (err) {

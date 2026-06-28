@@ -18,7 +18,13 @@ export default async function HomePage() {
   const featured = books.slice(0, 8);
   const displayBooks = useLocalBooks
     ? localBooks.map((b) => ({
-        book: { _id: b._id, title: b.title, year: b.year, description: b.description },
+        book: {
+          _id: b._id,
+          title: b.title,
+          year: b.year,
+          description: b.description,
+          purchaseUrl: b.purchaseUrl,
+        },
         fallback: b.coverSrc,
       }))
     : featured.map((b) => ({ book: b, fallback: undefined }));

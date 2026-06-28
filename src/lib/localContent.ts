@@ -1,7 +1,9 @@
 /**
- * Tillfälligt, lokalt innehåll (placeholders) som visas tills Sanity är
- * uppkopplat och André laddat upp riktigt material. Bilderna ligger i
- * /public/images. När motsvarande fält finns i Sanity används det istället.
+ * Tillfälligt, lokalt innehåll som visas tills Sanity är uppkopplat och André
+ * fyller på själv. Bilderna ligger i /public/images. När motsvarande fält finns
+ * i Sanity används det istället.
+ *
+ * Innehållet bygger på materialet André skickade (böcker, länkar, kontakt).
  */
 
 export const localImages = {
@@ -12,55 +14,55 @@ export const localImages = {
   portrait: "/images/Portrait.png",
 } as const;
 
+/** Kontakt- och profiluppgifter (platshållare tills Sanity fylls). */
+export const localProfile = {
+  name: "André Roslund",
+  tagline: "Författare",
+  aboutHeading: "Om mig",
+  // Saklig, neutral text – André finjusterar gärna själv i CMS.
+  aboutText:
+    "André Roslund är en svensk författare, född 1970. Han skriver true crime och självbiografiska berättelser som utgår från egna erfarenheter. Debuten Älsklingsgrabben gavs ut 1999, följd av bland annat Ränderna går aldrig ur och ADHD-bedragaren.",
+  email: "andreroslund@outlook.com",
+  phone: "076-286 81 43",
+  facebookUrl: "https://www.facebook.com/profile.php?id=100074433578866",
+  youtubeUrl: "https://www.youtube.com/@andreroslund1366",
+} as const;
+
 export interface LocalBook {
   _id: string;
   title: string;
   year?: string;
   description?: string;
   coverSrc: string;
+  purchaseUrl?: string;
 }
 
 export const localBooks: LocalBook[] = [
   {
-    _id: "local-1",
-    title: "Boktitel 1",
-    year: "2024",
-    description: "Kort beskrivning av boken. (Tillfällig text.)",
-    coverSrc: "/images/Omslag1.png",
-  },
-  {
-    _id: "local-2",
-    title: "Boktitel 2",
-    year: "2023",
-    description: "Kort beskrivning av boken. (Tillfällig text.)",
-    coverSrc: "/images/Omslag2.png",
-  },
-  {
-    _id: "local-3",
-    title: "Boktitel 3",
-    year: "2022",
-    description: "Kort beskrivning av boken. (Tillfällig text.)",
-    coverSrc: "/images/Omslag3.png",
-  },
-  {
-    _id: "local-4",
-    title: "Boktitel 4",
-    year: "2021",
-    description: "Kort beskrivning av boken. (Tillfällig text.)",
-    coverSrc: "/images/Omslag4.png",
-  },
-  {
-    _id: "local-5",
-    title: "Boktitel 5",
+    _id: "local-adhd",
+    title: "ADHD-bedragaren",
     year: "2020",
-    description: "Kort beskrivning av boken. (Tillfällig text.)",
-    coverSrc: "/images/Omslag5.png",
+    description:
+      "Självbiografisk true crime utgiven på Bymarken Förlag.",
+    coverSrc: "/images/Bok1.jpg",
+    purchaseUrl: "https://www.boktugg.se/forfattare/315963/",
   },
   {
-    _id: "local-6",
-    title: "Boktitel 6",
-    year: "2019",
-    description: "Kort beskrivning av boken. (Tillfällig text.)",
-    coverSrc: "/images/Omslag6.png",
+    _id: "local-alsklingsgrabben",
+    title: "Älsklingsgrabben",
+    year: "1999",
+    description:
+      "Andrés debutroman, utgiven på Fischer & Co.",
+    coverSrc: "/images/Bok2.webp",
+    purchaseUrl:
+      "https://nextory.com/se/book/alsklingsgrabben-2719001",
+  },
+  {
+    _id: "local-randerna",
+    title: "Ränderna går aldrig ur",
+    year: "2016",
+    description: "True crime, utgiven på Lind & Co.",
+    coverSrc: "/images/Bok3.jpg",
+    purchaseUrl: "https://lindco.se/",
   },
 ];

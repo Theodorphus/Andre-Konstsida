@@ -14,7 +14,13 @@ export default async function BooksPage() {
   const useLocalBooks = books.length === 0;
   const displayBooks = useLocalBooks
     ? localBooks.map((b) => ({
-        book: { _id: b._id, title: b.title, year: b.year, description: b.description },
+        book: {
+          _id: b._id,
+          title: b.title,
+          year: b.year,
+          description: b.description,
+          purchaseUrl: b.purchaseUrl,
+        },
         fallback: b.coverSrc,
       }))
     : books.map((b) => ({ book: b, fallback: undefined }));

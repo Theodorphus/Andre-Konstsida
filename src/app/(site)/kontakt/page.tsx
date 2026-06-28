@@ -3,7 +3,7 @@ import { getSettings } from "@/sanity/lib/queries";
 import SanityImg from "@/components/SanityImg";
 import ContactForm from "@/components/ContactForm";
 import Reveal from "@/components/Reveal";
-import { localImages } from "@/lib/localContent";
+import { localImages, localProfile } from "@/lib/localContent";
 
 export const metadata: Metadata = {
   title: "Kontakt",
@@ -12,8 +12,9 @@ export const metadata: Metadata = {
 
 export default async function ContactPage() {
   const settings = await getSettings();
-  const name = settings?.name ?? "André Roslund";
-  const email = settings?.email ?? "andreroslund@outlook.com";
+  const name = settings?.name ?? localProfile.name;
+  const email = settings?.email ?? localProfile.email;
+  const phone = settings?.phone ?? localProfile.phone;
 
   return (
     <section className="mx-auto max-w-6xl px-6 pt-32 pb-24">
@@ -46,7 +47,7 @@ export default async function ContactPage() {
             </div>
           ) : (
             <p className="mt-6 leading-relaxed text-muted">
-              Här berättar André kort om sig själv och sitt författarskap.
+              {localProfile.aboutText}
             </p>
           )}
         </Reveal>
@@ -67,10 +68,17 @@ export default async function ContactPage() {
                 </a>
               </dd>
             </div>
-            {settings?.phone && (
+            {phone && (
               <div>
                 <dt className="uppercase tracking-wide text-muted">Telefon</dt>
-                <dd>{settings.phone}</dd>
+                <dd>
+                  <a
+                    href={`tel:${phone.replace(/[\s-]/g, "")}`}
+                    className="link-underline"
+                  >
+                    {phone}
+                  </a>
+                </dd>
               </div>
             )}
           </dl>

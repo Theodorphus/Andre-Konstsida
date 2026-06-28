@@ -1,11 +1,12 @@
 import Link from "next/link";
 import type { SiteSettings } from "@/sanity/lib/queries";
+import { localProfile } from "@/lib/localContent";
 
 export default function Footer({ settings }: { settings: SiteSettings | null }) {
-  const name = settings?.name ?? "André Roslund";
-  const email = settings?.email ?? "andreroslund@outlook.com";
-  const youtube =
-    settings?.youtubeUrl ?? "https://www.youtube.com/@andreroslund1366";
+  const name = settings?.name ?? localProfile.name;
+  const email = settings?.email ?? localProfile.email;
+  const youtube = settings?.youtubeUrl ?? localProfile.youtubeUrl;
+  const facebook = settings?.facebookUrl ?? localProfile.facebookUrl;
 
   const socials = [
     { href: youtube, label: "YouTube" },
@@ -13,7 +14,7 @@ export default function Footer({ settings }: { settings: SiteSettings | null }) 
       href: settings.instagramUrl,
       label: "Instagram",
     },
-    settings?.facebookUrl && { href: settings.facebookUrl, label: "Facebook" },
+    facebook && { href: facebook, label: "Facebook" },
   ].filter(Boolean) as { href: string; label: string }[];
 
   return (

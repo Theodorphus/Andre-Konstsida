@@ -148,11 +148,7 @@ export default async function ArtworkPage({ params }: Props) {
                 Skicka en förfrågan
               </h2>
               <div className="mt-5">
-                <ContactForm
-                  toEmail={email}
-                  subject={artwork.title}
-                  context="artwork"
-                />
+                <ContactForm toEmail={email} artworkTitle={artwork.title} />
               </div>
             </>
           )}

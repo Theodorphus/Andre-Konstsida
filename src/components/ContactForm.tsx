@@ -7,21 +7,14 @@ type Status = "idle" | "sending" | "success" | "error";
 /**
  * Kontaktformulär som postar till /api/contact, vilket skickar mejl via Resend.
  * toEmail används som synlig fallback-länk om något går fel.
- *
- * Med `subject` satt märks meddelandet med ett ämne (t.ex. ett konstverk eller
- * en föreläsning). `context` styr vilket flöde det gäller så att knapp- och
- * bekräftelsetexter passar sammanhanget.
+ * Med artworkTitle satt blir formuläret en köpförfrågan för det verket.
  */
 export default function ContactForm({
   toEmail,
-  subject,
-  context = "general",
+  artworkTitle,
 }: {
   toEmail: string;
-  /** Vad förfrågan gäller, t.ex. verkets titel eller föreläsningens namn. */
-  subject?: string;
-  /** Vilket sammanhang formuläret används i – styr texterna. */
-  context?: "general" | "artwork" | "lecture";
+  artworkTitle?: string;
 }) {
   const [name, setName] = useState("");
   const [from, setFrom] = useState("");
@@ -38,7 +31,7 @@ export default function ContactForm({
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, from, message, subject, context }),
+        body: JSON.stringify({ name, from, message, artwork: artworkTitle }),
       });
 
       if (!res.ok) {
@@ -61,27 +54,15 @@ export default function ContactForm({
   const field =
     "w-full border border-line bg-white/[0.02] px-4 py-3 text-sm text-foreground outline-none transition-all duration-300 placeholder:text-muted/70 focus:border-accent focus:bg-white/[0.04] focus:shadow-[0_0_0_3px_rgba(235,189,51,0.12)]";
 
-  // Texter per sammanhang
-  const subjectPrefix =
-    context === "lecture" ? "Förfrågan gäller föreläsning:" : "Förfrågan gäller:";
-  const successHeading =
-    context === "general"
-      ? "Tack för ditt meddelande!"
-      : "Tack för din förfrågan!";
-  const submitLabel =
-    context === "general" ? "Skicka" : "Skicka förfrågan";
-  const messagePlaceholder =
-    context === "lecture"
-      ? "Berätta gärna kort om er grupp och vilka datum som skulle passa"
-      : context === "artwork"
-        ? "Skriv gärna en hälsning eller fråga om verket"
-        : "Ditt meddelande";
-
   if (status === "success") {
     return (
       <div className="border border-accent/40 bg-white/[0.03] px-5 py-6 text-sm">
-        <p className="font-display text-lg text-accent">{successHeading}</p>
-        <p className="mt-2 text-muted">Jag återkommer så snart jag kan.</p>
+        <p className="font-display text-lg text-accent">
+          {artworkTitle ? "Tack för din förfrågan!" : "Tack för ditt meddelande!"}
+        </p>
+        <p className="mt-2 text-muted">
+          Jag återkommer så snart jag kan.
+        </p>
         <button
           type="button"
           onClick={() => setStatus("idle")}
@@ -97,9 +78,9 @@ export default function ContactForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      {subject && (
+      {artworkTitle && (
         <p className="border border-line bg-white/[0.02] px-4 py-3 text-sm text-muted">
-          {subjectPrefix} <span className="text-accent">{subject}</span>
+          Förfrågan gäller: <span className="text-accent">{artworkTitle}</span>
         </p>
       )}
       <input
@@ -122,7 +103,11 @@ export default function ContactForm({
       />
       <textarea
         className={field}
-        placeholder={messagePlaceholder}
+        placeholder={
+          artworkTitle
+            ? "Skriv gärna en hälsning eller fråga om verket"
+            : "Ditt meddelande"
+        }
         rows={5}
         value={message}
         onChange={(e) => setMessage(e.target.value)}
@@ -145,7 +130,7 @@ export default function ContactForm({
         disabled={sending}
         className="btn-gold px-6 py-3 text-sm uppercase tracking-wide disabled:opacity-60"
       >
-        {sending ? "Skickar…" : submitLabel}
+        {sending ? "Skickar…" : artworkTitle ? "Skicka förfrågan" : "Skicka"}
       </button>
     </form>
   );

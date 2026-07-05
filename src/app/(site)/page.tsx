@@ -1,61 +1,44 @@
 import Link from "next/link";
-import { getSettings, getBooks, getUpdates } from "@/sanity/lib/queries";
+import { getSettings, getArtworks, type Artwork } from "@/sanity/lib/queries";
 import SanityImg from "@/components/SanityImg";
-import BookCard from "@/components/BookCard";
+import ArtworkCard from "@/components/ArtworkCard";
 import Reveal from "@/components/Reveal";
-import { localImages, localBooks, localUpdates } from "@/lib/localContent";
+import { localImages, localProfile, localArtworks } from "@/lib/localContent";
+import { localArtworkToArtwork } from "@/lib/artwork";
 
 export default async function HomePage() {
-  const [settings, books, updates] = await Promise.all([
+  const [settings, artworks] = await Promise.all([
     getSettings(),
-    getBooks(),
-    getUpdates(),
+    getArtworks(),
   ]);
 
-  const name = settings?.name ?? "André Roslund";
-  // Faller tillbaka på tillfälliga lokala böcker tills Sanity har innehåll
-  const useLocalBooks = books.length === 0;
-  const featured = books.slice(0, 8);
-  const displayBooks = useLocalBooks
-    ? localBooks.map((b) => ({
-        book: {
-          _id: b._id,
-          title: b.title,
-          year: b.year,
-          description: b.description,
-          purchaseUrl: b.purchaseUrl,
-        },
-        fallback: b.coverSrc,
-      }))
-    : featured.map((b) => ({ book: b, fallback: undefined }));
-  const latestUpdate = updates[0] ?? localUpdates[0];
+  const name = settings?.name ?? localProfile.name;
+  // Faller tillbaka på platshållarverk tills Sanity har innehåll
+  const displayArtworks: Artwork[] =
+    artworks.length > 0
+      ? artworks.slice(0, 6)
+      : localArtworks.map(localArtworkToArtwork);
 
-  const tiles = [
+  const steps = [
     {
-      href: "/bocker",
-      label: "Böcker",
-      image: settings?.tileBooks,
-      fallback: localImages.tileBooks,
+      title: "Skicka en förfrågan",
+      body: "Hittar du ett verk du gillar? Skicka en förfrågan direkt från verkets sida, så hör jag av mig.",
     },
     {
-      href: "/kontakt",
-      label: "Om mig",
-      image: settings?.tileAbout,
-      fallback: localImages.tileAbout,
+      title: "Betala enkelt",
+      body: "Vi gör upp om detaljerna och du betalar tryggt via Swish eller faktura – inga konton eller kortuppgifter behövs.",
     },
     {
-      href: "/aktuellt",
-      label: "Aktuellt",
-      image: settings?.tileUpdates,
-      fallback: localImages.tileUpdates,
+      title: "Få verket levererat",
+      body: "Verket skickas inom Sverige, eller körs ut personligen efter överenskommelse.",
     },
   ];
 
   return (
     <>
-      {/* Hero – mörk målerisk bakgrund, stort guldnamn, tre tiles.
+      {/* Hero – mörk målerisk bakgrund, stort guldnamn.
           Full skärmhöjd först från md och uppåt; på mobil växer den med
-          innehållet så att tiles inte lämnar en stor tom yta. */}
+          innehållet. */}
       <section className="hero-paint relative flex flex-col justify-center overflow-hidden md:min-h-[100svh]">
         {/* Bakgrundsbild med ken-burns + djup vignett för läsbarhet */}
         <div className="pointer-events-none absolute inset-0">
@@ -75,7 +58,7 @@ export default async function HomePage() {
           <div className="absolute inset-0 bg-[var(--background)]/45" />
         </div>
 
-        <div className="relative mx-auto w-full max-w-6xl px-6 py-20 md:py-24">
+        <div className="relative mx-auto w-full max-w-6xl px-6 py-24 md:py-28">
           <h1 className="hero-name font-display text-center text-6xl leading-none sm:text-7xl md:text-[7.5rem] fade-up">
             {name}
           </h1>
@@ -84,32 +67,19 @@ export default async function HomePage() {
             className="mt-5 text-center text-sm uppercase tracking-[0.4em] text-accent/85 fade-up"
             style={{ animationDelay: "0.2s" }}
           >
-            {settings?.tagline ?? "Författare"}
+            {settings?.tagline ?? localProfile.tagline}
           </p>
 
           <div
-            className="mt-16 grid gap-6 sm:grid-cols-3"
+            className="mt-14 flex justify-center fade-up"
+            style={{ animationDelay: "0.4s" }}
           >
-            {tiles.map((t, i) => (
-              <Reveal key={t.href} delay={i * 120}>
-                <Link href={t.href} className="group block">
-                  <p className="tile-label mb-3 text-center font-display text-lg uppercase tracking-wide text-accent sm:text-xl">
-                    {t.label}
-                  </p>
-                  <div className="tile">
-                    <SanityImg
-                      image={t.image}
-                      fallbackSrc={t.fallback}
-                      alt={t.label}
-                      width={600}
-                      height={600}
-                      sizes="(max-width: 640px) 100vw, 33vw"
-                      className="h-full w-full object-cover"
-                    />
-                  </div>
-                </Link>
-              </Reveal>
-            ))}
+            <Link
+              href="/galleri"
+              className="btn-gold px-8 py-3.5 text-sm uppercase tracking-[0.2em]"
+            >
+              Till galleriet
+            </Link>
           </div>
         </div>
 
@@ -127,59 +97,55 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Böcker */}
+      {/* Utvalda verk */}
       <section>
         <div className="mx-auto max-w-6xl px-6 py-24">
           <Reveal className="mb-12 flex items-end justify-between">
-            <h2 className="font-display text-3xl text-accent sm:text-4xl">Böcker</h2>
+            <h2 className="font-display text-3xl text-accent sm:text-4xl">
+              Utvalda verk
+            </h2>
             <Link
-              href="/bocker"
+              href="/galleri"
               className="text-sm uppercase tracking-wide link-underline text-muted"
             >
               Se alla
             </Link>
           </Reveal>
 
-          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-4">
-            {displayBooks.map((d, i) => (
-              <Reveal key={d.book._id} delay={(i % 4) * 100}>
-                <BookCard book={d.book} fallbackCoverSrc={d.fallback} />
+          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
+            {displayArtworks.map((a, i) => (
+              <Reveal key={a._id} delay={(i % 3) * 100}>
+                <ArtworkCard artwork={a} />
               </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Aktuellt (teaser) */}
-      {latestUpdate && (
-        <section>
-          <div className="section-divider mx-auto max-w-6xl" />
-          <div className="mx-auto max-w-6xl px-6 py-24">
-            <Reveal>
-              <h2 className="mb-8 font-display text-3xl text-accent sm:text-4xl">
-                Aktuellt
-              </h2>
-              <div className="border-l-2 border-accent pl-6">
-                {latestUpdate.date && (
-                  <p className="text-sm text-muted">{latestUpdate.date}</p>
-                )}
-                <h3 className="mt-1 font-display text-2xl">{latestUpdate.title}</h3>
-                {latestUpdate.body && (
-                  <p className="mt-2 max-w-2xl leading-relaxed text-muted">
-                    {latestUpdate.body}
-                  </p>
-                )}
-                <Link
-                  href="/aktuellt"
-                  className="mt-4 inline-block text-sm uppercase tracking-wide link-underline"
-                >
-                  Se allt
-                </Link>
-              </div>
-            </Reveal>
+      {/* Så köper du */}
+      <section>
+        <div className="section-divider mx-auto max-w-6xl" />
+        <div className="mx-auto max-w-6xl px-6 py-24">
+          <Reveal>
+            <h2 className="mb-12 font-display text-3xl text-accent sm:text-4xl">
+              Så köper du
+            </h2>
+          </Reveal>
+          <div className="grid gap-10 sm:grid-cols-3">
+            {steps.map((s, i) => (
+              <Reveal key={s.title} delay={i * 120}>
+                <div className="border-l-2 border-accent pl-6">
+                  <p className="font-display text-4xl text-accent/40">{i + 1}</p>
+                  <h3 className="mt-2 font-display text-xl text-accent">
+                    {s.title}
+                  </h3>
+                  <p className="mt-2 leading-relaxed text-muted">{s.body}</p>
+                </div>
+              </Reveal>
+            ))}
           </div>
-        </section>
-      )}
+        </div>
+      </section>
     </>
   );
 }

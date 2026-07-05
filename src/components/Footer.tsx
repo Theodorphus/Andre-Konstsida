@@ -5,6 +5,7 @@ import { localProfile } from "@/lib/localContent";
 export default function Footer({ settings }: { settings: SiteSettings | null }) {
   const name = settings?.name ?? localProfile.name;
   const email = settings?.email ?? localProfile.email;
+  const authorSite = settings?.authorSiteUrl ?? localProfile.authorSiteUrl;
   const youtube = settings?.youtubeUrl ?? localProfile.youtubeUrl;
   const facebook = settings?.facebookUrl ?? localProfile.facebookUrl;
 
@@ -25,8 +26,8 @@ export default function Footer({ settings }: { settings: SiteSettings | null }) 
             {name}
           </p>
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-accent/70">
-            Författaren {name}. Upptäck mina böcker och följ vad jag arbetar med
-            just nu.
+            Originalkonst av {name}. Alla verk säljs direkt av konstnären –
+            skicka en förfrågan så hör jag av mig.
           </p>
         </div>
 
@@ -36,9 +37,20 @@ export default function Footer({ settings }: { settings: SiteSettings | null }) 
           </p>
           <ul className="space-y-2.5 text-muted">
             <li><Link href="/" className="hover:text-accent">Hem</Link></li>
-            <li><Link href="/bocker" className="hover:text-accent">Böcker</Link></li>
-            <li><Link href="/aktuellt" className="hover:text-accent">Aktuellt</Link></li>
+            <li><Link href="/galleri" className="hover:text-accent">Galleri</Link></li>
             <li><Link href="/kontakt" className="hover:text-accent">Kontakt</Link></li>
+            {authorSite && (
+              <li>
+                <a
+                  href={authorSite}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-accent"
+                >
+                  Författarsidan
+                </a>
+              </li>
+            )}
           </ul>
         </div>
 

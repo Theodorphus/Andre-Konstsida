@@ -12,6 +12,11 @@ interface Props {
   className?: string;
   sizes?: string;
   priority?: boolean;
+  /**
+   * Behåll bildens egna proportioner istället för att beskära till width/height.
+   * Används för konstverk där hela målningen ska synas.
+   */
+  noCrop?: boolean;
 }
 
 /**
@@ -28,10 +33,30 @@ export default function SanityImg({
   className,
   sizes,
   priority,
+  noCrop,
 }: Props) {
-  const src = image?.asset
-    ? urlForImage(image).width(width).height(height).url()
+  const fromSanity = !!image?.asset;
+  const src = fromSanity
+    ? noCrop
+      ? urlForImage(image!).width(width).fit("max").url()
+      : urlForImage(image!).width(width).height(height).url()
     : fallbackSrc;
+
+  // I noCrop-läge vill vi behålla bildens egna proportioner. För Sanity-bilder
+  // ger fit("max") redan rätt mått. För en lokal fallback (platshållarverk innan
+  // Sanity fyllts) känner vi inte till måtten, så vi låter webbläsaren bestämma
+  // höjden utifrån filen istället för att tvinga fram width/height-förhållandet.
+  if (src && noCrop && !fromSanity) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={src}
+        alt={alt}
+        className={`h-auto w-full ${className ?? ""}`}
+        loading={priority ? "eager" : "lazy"}
+      />
+    );
+  }
 
   if (!src) {
     return (
@@ -52,7 +77,7 @@ export default function SanityImg({
       alt={alt}
       width={width}
       height={height}
-      className={className}
+      className={noCrop ? `h-auto w-full ${className ?? ""}` : className}
       sizes={sizes}
       priority={priority}
     />

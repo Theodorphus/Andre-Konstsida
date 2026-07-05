@@ -2,7 +2,7 @@
 
 /**
  * Konfiguration för Sanity Studio som monteras på /studio.
- * André loggar in här för att redigera böcker, texter och bilder.
+ * André loggar in här för att lägga in konstverk och redigera texter/bilder.
  */
 import { defineConfig } from "sanity";
 import { structureTool } from "sanity/structure";
@@ -14,7 +14,7 @@ import { structure } from "./src/sanity/structure";
 
 export default defineConfig({
   basePath: "/studio",
-  title: "André Roslund – Innehåll",
+  title: "André Art – Innehåll",
   projectId,
   dataset,
   schema,

@@ -17,7 +17,7 @@ export const siteSettings = defineType({
       name: "tagline",
       title: "Undertitel / yrkesroll",
       type: "string",
-      initialValue: "Författare",
+      initialValue: "Konst",
     }),
     defineField({
       name: "heroImage",
@@ -28,32 +28,14 @@ export const siteSettings = defineType({
       options: { hotspot: true },
     }),
     defineField({
-      name: "tileBooks",
-      title: "Tile-bild: Böcker",
-      type: "image",
-      options: { hotspot: true },
-    }),
-    defineField({
-      name: "tileAbout",
-      title: "Tile-bild: Om mig",
-      type: "image",
-      options: { hotspot: true },
-    }),
-    defineField({
-      name: "tileUpdates",
-      title: "Tile-bild: Aktuellt",
-      type: "image",
-      options: { hotspot: true },
-    }),
-    defineField({
       name: "aboutHeading",
-      title: "Rubrik – Om mig",
+      title: "Rubrik – Om konstnären",
       type: "string",
-      initialValue: "Om mig",
+      initialValue: "Om konstnären",
     }),
     defineField({
       name: "aboutText",
-      title: "Text – Om mig",
+      title: "Text – Om konstnären",
       type: "array",
       of: [{ type: "block" }],
     }),
@@ -62,6 +44,14 @@ export const siteSettings = defineType({
       title: "Porträtt / bild på dig",
       type: "image",
       options: { hotspot: true },
+    }),
+    defineField({
+      name: "buyingInfo",
+      title: "Så köper du – kort text om hur ett köp går till",
+      description:
+        "Visas på verksidorna. T.ex: skicka en förfrågan så återkommer jag, betalning via Swish eller faktura, leverans inom Sverige eller utkörning.",
+      type: "text",
+      rows: 4,
     }),
     defineField({
       name: "email",
@@ -73,6 +63,12 @@ export const siteSettings = defineType({
       name: "phone",
       title: "Kontakt – telefon",
       type: "string",
+    }),
+    defineField({
+      name: "authorSiteUrl",
+      title: "Länk till författarsidan (andre-roslund.se)",
+      type: "url",
+      initialValue: "https://www.andre-roslund.se",
     }),
     defineField({
       name: "youtubeUrl",

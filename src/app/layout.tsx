@@ -15,17 +15,17 @@ const body = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://andre-roslund.se"),
+  metadataBase: new URL("https://andre-art.se"),
   title: {
-    default: "André Roslund – Författare",
-    template: "%s | André Roslund",
+    default: "André Roslund – Konst",
+    template: "%s | André Art",
   },
   description:
-    "Författaren André Roslund. Upptäck mina böcker och följ vad jag arbetar med just nu.",
+    "Originalkonst av André Roslund. Se verken i galleriet och skicka en förfrågan om det du vill köpa.",
   openGraph: {
-    title: "André Roslund – Författare",
+    title: "André Roslund – Konst",
     description:
-      "Författaren André Roslund. Upptäck mina böcker och följ vad jag arbetar med just nu.",
+      "Originalkonst av André Roslund. Se verken i galleriet och skicka en förfrågan om det du vill köpa.",
     locale: "sv_SE",
     type: "website",
   },

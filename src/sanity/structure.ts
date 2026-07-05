@@ -1,6 +1,6 @@
 import type { StructureResolver } from "sanity/structure";
 
-// Sidinställningar som singleton, böcker och aktuellt som listor
+// Sidinställningar som singleton, konstverken som lista
 export const structure: StructureResolver = (S) =>
   S.list()
     .title("Innehåll")
@@ -11,13 +11,6 @@ export const structure: StructureResolver = (S) =>
         .child(
           S.document().schemaType("siteSettings").documentId("siteSettings"),
         ),
-      S.listItem()
-        .title("Meningen med livet")
-        .id("meaningOfLife")
-        .child(
-          S.document().schemaType("meaningOfLife").documentId("meaningOfLife"),
-        ),
       S.divider(),
-      S.documentTypeListItem("book").title("Böcker"),
-      S.documentTypeListItem("update").title("Aktuellt"),
+      S.documentTypeListItem("artwork").title("Konstverk"),
     ]);

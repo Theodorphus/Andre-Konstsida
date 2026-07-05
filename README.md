@@ -1,10 +1,15 @@
-# André Roslund – författarhemsida
+# André Art – konstbutik
 
-Next.js (App Router, TypeScript, Tailwind v4) + Sanity CMS. Designen är inspirerad
-av reginalundart.se: ljus, varm bakgrund, stort serif-namn och ett rent galleri.
+Next.js (App Router, TypeScript, Tailwind v4) + Sanity CMS. Enkel konstbutik för
+**andre-art.se** – samma tekniska grund och designspråk som författarsidan
+andre-roslund.se (mörk marinblå bakgrund, guld, serif-typografi).
 
-André kan själv redigera innehåll (böcker, texter, bilder) via Sanity Studio på
-`/studio`. Du (Webbdev Studio) kan också lägga in materialet åt honom.
+**Ingen betalintegration.** Köp sker via förfrågan: besökaren skickar ett
+formulär från verkets sida, André gör upp om Swish/faktura och leverans manuellt.
+Kan byggas på med kortbetalning senare om volymen växer.
+
+André lägger själv in sina konstverk via Sanity Studio på `/studio`
+(samma flöde som han redan lärt sig på författarsidan).
 
 ## Komma igång lokalt
 
@@ -17,42 +22,42 @@ Studio (CMS) ligger på http://localhost:3000/studio
 
 ## Koppla Sanity (görs en gång)
 
-Sidan funkar med platshållare även utan Sanity, men för riktigt innehåll:
-
-1. Skapa ett gratis Sanity-projekt:
-   ```bash
-   npx sanity@latest init
-   ```
-   Välj "production" som dataset. Notera **Project ID**.
-2. Fyll i `.env.local` (utgå från `.env.local.example`):
-   ```
-   NEXT_PUBLIC_SANITY_PROJECT_ID="<ditt-project-id>"
-   NEXT_PUBLIC_SANITY_DATASET="production"
-   NEXT_PUBLIC_SANITY_API_VERSION="2024-10-01"
-   ```
-3. Bjud in André som medlem i Sanity-projektet (sanity.io/manage) så han kan
-   logga in på `/studio` och redigera själv.
-4. I Sanity-projektets API-inställningar: lägg till sidans URL under **CORS origins**
-   (t.ex. `https://andre-roslund.se` och `http://localhost:3000`).
+Sidan funkar med platshållare även utan Sanity — se `SANITY-SETUP.md` för
+checklistan (nytt projekt, .env.local, seed, CORS, bjud in André).
 
 ## Innehåll (i /studio)
 
-- **Sidinställningar** – namn, undertitel, hero-bild, porträtt, om-text, kontakt,
-  YouTube/Instagram/Facebook. (Ett enda dokument.)
-- **Böcker** – titel, omslag, år, beskrivning, köp-länk, sorteringsordning. (6–8 st.)
-- **Aktuellt** – inlägg om vad André arbetar med just nu.
+- **Sidinställningar** – namn, undertitel, hero-bild, porträtt, om-text,
+  "Så köper du"-text, kontakt, sociala länkar. (Ett enda dokument.)
+- **Konstverk** – titel, bild (+ ev. extrabilder), teknik, mått, år,
+  beskrivning, pris (valfritt – lämnas tomt visas ingen prisuppgift),
+  status (till salu / reserverad / såld), sorteringsordning.
 
-Bilder som inte lagts upp ännu visas som diskreta platshållare ("BILD").
+Sålda verk ligger kvar i galleriet med "Såld"-märkning – bra socialt bevis.
+
+## Köpflödet
+
+1. Besökaren klickar på ett verk i galleriet → `/verk/[slug]`
+2. Skickar en förfrågan via formuläret (Resend mejlar André, ämnesrad
+   "Köpförfrågan: [verkets titel]")
+3. André svarar och gör upp om betalning (Swish/faktura) och
+   leverans/utkörning manuellt
 
 ## Driftsättning
 
-1. **Deploya till Vercel** (frontend + Studio):
-   - Pusha till GitHub och importera i Vercel, eller kör `vercel`.
-   - Lägg in samma miljövariabler i Vercel som i `.env.local`.
-2. **Peka om domänen** `andre-roslund.se` (ligger hos **Loopia**):
+1. **Nytt GitHub-repo** – klonen utgår från Andre-Roslund-repot; byt remote:
+   ```bash
+   git remote set-url origin https://github.com/Theodorphus/Andre-Art.git
+   ```
+2. **Deploya till Vercel** (frontend + Studio):
+   - Importera repot i Vercel, eller kör `vercel`.
+   - Lägg in samma miljövariabler i Vercel som i `.env.local`
+     (Sanity-vars + `RESEND_API_KEY` + `CONTACT_FROM_EMAIL`).
+3. **Registrera & peka domänen** `andre-art.se` (Loopia, samma konto som
+   andre-roslund.se):
    - Lägg till domänen i Vercel-projektet.
    - I Loopias DNS: peka A-record/CNAME enligt Vercels instruktioner.
-   - Den gamla WordPress-sidan kan ligga kvar tills DNS är ompekad.
+4. Länka från andre-roslund.se till andre-art.se (André ville koppla ihop dem).
 
 ## Struktur
 
@@ -60,13 +65,15 @@ Bilder som inte lagts upp ännu visas som diskreta platshållare ("BILD").
 src/
   app/
     (site)/            # Publika sidor med header/footer
-      page.tsx         # Startsida (hero, böcker, om, aktuellt)
-      bocker/          # Alla böcker
-      aktuellt/        # Aktuellt-inlägg
-      kontakt/         # Om mig + kontakt + formulär
+      page.tsx         # Startsida (hero, utvalda verk, "Så köper du")
+      galleri/         # Alla verk
+      verk/[slug]/     # Enskilt verk + köpförfrågan
+      kontakt/         # Om konstnären + kontakt + formulär
+    api/contact/       # Resend-utskick (kontakt + köpförfrågningar)
     studio/            # Sanity Studio (/studio)
     layout.tsx         # Typsnitt + global metadata
     globals.css        # Designsystem (färger, typsnitt)
-  components/          # Header, Footer, BookCard, SanityImg, ContactForm
+  components/          # Header, Footer, ArtworkCard, SanityImg, ContactForm
+  lib/                 # Platshållarinnehåll + verk-hjälpare
   sanity/              # Klient, scheman, queries, env
 ```

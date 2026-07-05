@@ -3,36 +3,35 @@ import { groq } from "next-sanity";
 import { client } from "./client";
 import { isSanityConfigured } from "../env";
 
-export interface Book {
+export type ArtworkStatus = "tillSalu" | "reserverad" | "sald";
+
+export interface Artwork {
   _id: string;
   title: string;
+  slug?: { current?: string };
+  technique?: string;
+  dimensions?: string;
   year?: string;
   description?: string;
-  purchaseUrl?: string;
-  cover?: SanityImage;
-}
-
-export interface UpdateItem {
-  _id: string;
-  title: string;
-  date?: string;
-  body?: string;
-  link?: string;
+  price?: number;
+  status?: ArtworkStatus;
   image?: SanityImage;
+  extraImages?: SanityImage[];
+  /** Lokal fallback-bild – används bara för platshållarverk innan Sanity fyllts. */
+  fallbackImageSrc?: string;
 }
 
 export interface SiteSettings {
   name?: string;
   tagline?: string;
   heroImage?: SanityImage;
-  tileBooks?: SanityImage;
-  tileAbout?: SanityImage;
-  tileUpdates?: SanityImage;
   aboutHeading?: string;
   aboutText?: PortableTextBlock[];
   portrait?: SanityImage;
+  buyingInfo?: string;
   email?: string;
   phone?: string;
+  authorSiteUrl?: string;
   youtubeUrl?: string;
   instagramUrl?: string;
   facebookUrl?: string;
@@ -52,26 +51,24 @@ export interface PortableTextBlock {
   [key: string]: unknown;
 }
 
-export interface MeaningOfLife {
-  title?: string;
-  body?: PortableTextBlock[];
-}
-
 const settingsQuery = groq`*[_type == "siteSettings"][0]`;
-const booksQuery = groq`*[_type == "book"] | order(order asc, _createdAt asc)`;
-const updatesQuery = groq`*[_type == "update"] | order(date desc)`;
-const meaningQuery = groq`*[_type == "meaningOfLife"][0]`;
+const artworksQuery = groq`*[_type == "artwork"] | order(order asc, _createdAt desc)`;
+const artworkBySlugQuery = groq`*[_type == "artwork" && slug.current == $slug][0]`;
 
 // Hämtas på servern; revalideras var 60:e sekund så CMS-ändringar slår igenom
 const opts = { next: { revalidate: 60 } };
 
 // Innan Sanity-projektet är kopplat (eller vid tillfälligt fel) faller vi
 // tillbaka på tomt innehåll så att sidan ändå renderar med platshållare.
-async function safeFetch<T>(query: string, fallback: T): Promise<T> {
+async function safeFetch<T>(
+  query: string,
+  fallback: T,
+  params: Record<string, unknown> = {},
+): Promise<T> {
   // Hoppa över nätverksanropet helt om inget riktigt Sanity-projekt är satt.
   if (!isSanityConfigured) return fallback;
   try {
-    return await client.fetch(query, {}, opts);
+    return await client.fetch(query, params, opts);
   } catch (err) {
     console.warn("Sanity-hämtning misslyckades (visar platshållare):", err);
     return fallback;
@@ -82,14 +79,10 @@ export async function getSettings(): Promise<SiteSettings | null> {
   return safeFetch<SiteSettings | null>(settingsQuery, null);
 }
 
-export async function getBooks(): Promise<Book[]> {
-  return safeFetch<Book[]>(booksQuery, []);
+export async function getArtworks(): Promise<Artwork[]> {
+  return safeFetch<Artwork[]>(artworksQuery, []);
 }
 
-export async function getUpdates(): Promise<UpdateItem[]> {
-  return safeFetch<UpdateItem[]>(updatesQuery, []);
-}
-
-export async function getMeaningOfLife(): Promise<MeaningOfLife | null> {
-  return safeFetch<MeaningOfLife | null>(meaningQuery, null);
+export async function getArtwork(slug: string): Promise<Artwork | null> {
+  return safeFetch<Artwork | null>(artworkBySlugQuery, null, { slug });
 }

@@ -7,8 +7,15 @@ type Status = "idle" | "sending" | "success" | "error";
 /**
  * Kontaktformulär som postar till /api/contact, vilket skickar mejl via Resend.
  * toEmail används som synlig fallback-länk om något går fel.
+ * Med artworkTitle satt blir formuläret en köpförfrågan för det verket.
  */
-export default function ContactForm({ toEmail }: { toEmail: string }) {
+export default function ContactForm({
+  toEmail,
+  artworkTitle,
+}: {
+  toEmail: string;
+  artworkTitle?: string;
+}) {
   const [name, setName] = useState("");
   const [from, setFrom] = useState("");
   const [message, setMessage] = useState("");
@@ -24,7 +31,7 @@ export default function ContactForm({ toEmail }: { toEmail: string }) {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, from, message }),
+        body: JSON.stringify({ name, from, message, artwork: artworkTitle }),
       });
 
       if (!res.ok) {
@@ -50,7 +57,9 @@ export default function ContactForm({ toEmail }: { toEmail: string }) {
   if (status === "success") {
     return (
       <div className="border border-accent/40 bg-white/[0.03] px-5 py-6 text-sm">
-        <p className="font-display text-lg text-accent">Tack för ditt meddelande!</p>
+        <p className="font-display text-lg text-accent">
+          {artworkTitle ? "Tack för din förfrågan!" : "Tack för ditt meddelande!"}
+        </p>
         <p className="mt-2 text-muted">
           Jag återkommer så snart jag kan.
         </p>
@@ -69,6 +78,11 @@ export default function ContactForm({ toEmail }: { toEmail: string }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      {artworkTitle && (
+        <p className="border border-line bg-white/[0.02] px-4 py-3 text-sm text-muted">
+          Förfrågan gäller: <span className="text-accent">{artworkTitle}</span>
+        </p>
+      )}
       <input
         className={field}
         type="text"
@@ -89,7 +103,11 @@ export default function ContactForm({ toEmail }: { toEmail: string }) {
       />
       <textarea
         className={field}
-        placeholder="Ditt meddelande"
+        placeholder={
+          artworkTitle
+            ? "Skriv gärna en hälsning eller fråga om verket"
+            : "Ditt meddelande"
+        }
         rows={5}
         value={message}
         onChange={(e) => setMessage(e.target.value)}
@@ -112,7 +130,7 @@ export default function ContactForm({ toEmail }: { toEmail: string }) {
         disabled={sending}
         className="btn-gold px-6 py-3 text-sm uppercase tracking-wide disabled:opacity-60"
       >
-        {sending ? "Skickar…" : "Skicka"}
+        {sending ? "Skickar…" : artworkTitle ? "Skicka förfrågan" : "Skicka"}
       </button>
     </form>
   );

@@ -4,7 +4,7 @@ import { getArtworks } from "@/sanity/lib/queries";
 const baseUrl = "https://andre-art.se";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const routes = ["", "/galleri", "/kontakt"];
+  const routes = ["", "/galleri", "/samlingen", "/forelasning", "/kontakt"];
   const now = new Date();
 
   const artworks = await getArtworks();
